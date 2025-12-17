@@ -1,105 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
+import Wordbeat from "./pages/Wordbeat";
+import Songguess from "./pages/Songguess";
+import New from "./pages/New";
 
-/* ================= CONFIG ================= */
-
-const TOTAL_ROUNDS = 5;
-const TILES = 8;
-const BEATS_PER_ROUND = 8; // fixed for all rounds
-
-// Increasing BPM for difficulty
-const ROUND_BPM = [60, 80, 100, 120, 140];
-
-// Christmas-themed emojis, unique per round
-const EMOJI_SETS = [
-  ["🐱", "🎩", "🦇", "🐱", "🦇", "🦇", "🐱", "🎩"], 
-  ["🎂", "🐍", "🎂", "🐍", "🎂", "🐍", "🎂", "🐍"],
-  ["🚗", "⭐", "⭐", "🚗", "🚗", "🚗", "⭐", "🚗"],
-  ["🐝", "🌳", "🔑", "🔑", "🐝", "🌳", "🌳", "🐝"],
-  ["bit", "beat", "bet", "bet", "bit", "beat", "bit", "bet"]
-
-];
-
-const BEAT_URL = "metronome.mp3";
-
-/* ================= COMPONENT ================= */
-
-export default function SayTheWordGame() {
-  const [round, setRound] = useState(1);
-  const [activeTile, setActiveTile] = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
-
-  const audioRef = useRef(null);
-  const intervalRef = useRef(null);
-  const beatCountRef = useRef(0);
-
-  const bpm = ROUND_BPM[round - 1];
-  const currentEmojis = EMOJI_SETS[round - 1];
-  const beatInterval = (60 / bpm) * 1000;
-
-  /* ================= BEAT LOOP ================= */
-
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    intervalRef.current = setInterval(() => {
-      beatCountRef.current += 1;
-      setActiveTile((prev) => (prev + 1) % TILES);
-
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
-
-      if (beatCountRef.current >= BEATS_PER_ROUND) {
-        clearInterval(intervalRef.current);
-        setTimeout(handleRoundEnd, 600);
-      }
-    }, beatInterval);
-
-    return () => clearInterval(intervalRef.current);
-  }, [isPlaying, beatInterval]);
-
-  /* ================= GAME FLOW ================= */
-
-  const startGame = async () => {
-    if (audioRef.current) {
-      await audioRef.current.play();
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setHasStarted(true);
-    setIsPlaying(true);
-  };
-
-  const handleRoundEnd = () => {
-    beatCountRef.current = 0;
-    setActiveTile(-1);
-
-    if (round < TOTAL_ROUNDS) {
-      setRound((r) => r + 1);
-      setTimeout(() => setIsPlaying(true), 500);
-    } else {
-      setIsPlaying(false);
-      setIsGameOver(true);
-    }
-  };
-
-  const restartGame = () => {
-    setRound(1);
-    setActiveTile(-1);
-    setIsGameOver(false);
-    setHasStarted(false);
-    beatCountRef.current = 0;
-  };
-
-  /* ================= UI ================= */
+export default function App() {
+  const [activeTab, setActiveTab] = useState("wordbeat");
+  const TAB_HEIGHT = 64; // adjust if your tab bar height changes
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 bg-white overflow-hidden">
+    <div className="relative overflow-hidden min-h-screen">
       {/* Infinite Snowfall */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none z-0">
         {Array.from({ length: 50 }).map((_, i) => (
           <div
             key={i}
@@ -108,7 +19,7 @@ export default function SayTheWordGame() {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDuration: `${5 + Math.random() * 5}s`,
-              animationDelay: `${Math.random() * 5}s`
+              animationDelay: `${Math.random() * 5}s`,
             }}
           />
         ))}
@@ -123,56 +34,39 @@ export default function SayTheWordGame() {
         ))}
       </div>
 
-      {/* Game Container */}
-      <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 w-full max-w-md text-center z-10">
-        <h1 className="text-2xl sm:text-2xl font-extrabold mb-4 text-red-700">
-          🎄 Word Beat Challenge 🎄
-        </h1>
-
-        {!isGameOver && (
-          <p className="mb-4 text-lg sm:text-xl text-green-900 font-semibold">
-            Round {round} / {TOTAL_ROUNDS}
-          </p>
-        )}
-
-        <div className="grid grid-cols-4 gap-2 sm:gap-4">
-          {currentEmojis.map((emoji, i) => (
-            <div
-              key={i}
-              className={`h-16 sm:h-20 flex items-center justify-center rounded-xl border-2 text-2xl sm:text-3xl transition-all
-                ${
-                  activeTile === i
-                    ? "bg-white border-red-600 scale-110 shadow-md"
-                    : "bg-white border-green-700"
-                }`}
-            >
-              {emoji}
-            </div>
-          ))}
-        </div>
-
-        {!hasStarted && !isGameOver && (
-          <button
-            onClick={startGame}
-            className="mt-6 px-6 py-3 sm:px-8 sm:py-3 bg-gradient-to-r from-red-500 to-red-700 hover:scale-105 transform transition-all text-white rounded-xl text-lg sm:text-xl font-semibold shadow-lg"
-          >
-            🎅 Start Game
-          </button>
-        )}
-
-        {isGameOver && (
-          <button
-            onClick={restartGame}
-            className="mt-6 px-6 py-3 sm:px-8 sm:py-3 bg-gradient-to-r from-green-500 to-green-700 hover:scale-105 transform transition-all text-white rounded-xl text-lg sm:text-xl font-semibold shadow-lg"
-          >
-            Restart Game
-          </button>
-        )}
-
-        <audio ref={audioRef} src={BEAT_URL} preload="auto" />
+      {/* Tabs */}
+      <div className="flex border-b border-gray-300 bg-white shadow-md relative z-10 h-16">
+        <button
+          onClick={() => setActiveTab("wordbeat")}
+          className={`flex-1 py-4 text-lg font-semibold transition-colors ${
+            activeTab === "wordbeat"
+              ? "border-b-4 border-red-500 text-red-600"
+              : "text-gray-600 hover:text-red-500"
+          }`}
+        >
+          Word Beat Challenge
+        </button>
+        <button
+          onClick={() => setActiveTab("songguess")}
+          className={`flex-1 py-4 text-lg font-semibold transition-colors ${
+            activeTab === "songguess"
+              ? "border-b-4 border-red-500 text-red-600"
+              : "text-gray-600 hover:text-red-500"
+          }`}
+        >
+          Guess the Song
+        </button>
       </div>
 
-      {/* Snowfall animation CSS */}
+      {/* Tab Content */}
+      <div
+        className="relative z-10"
+        style={{ minHeight: `calc(100vh - ${TAB_HEIGHT}px)` }}
+      >
+        {activeTab === "wordbeat" && <Wordbeat />}
+        {activeTab === "songguess" && <Songguess />}
+      </div>
+
       <style>{`
         @keyframes fall {
           0% { transform: translateY(0); }
@@ -187,6 +81,8 @@ export default function SayTheWordGame() {
     </div>
   );
 }
+
+
 
 
 // import React, { useEffect, useRef, useState } from "react";
