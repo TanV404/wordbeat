@@ -11,11 +11,12 @@ const ROUND_BPM = [60, 80, 100, 120, 140];
 
 // Christmas-themed emojis, unique per round
 const EMOJI_SETS = [
-  ["🎄", "🕯️", "☕", "📸", "🚗", "🧀", "🎂", "🐱"], // C
-  ["🔔", "🎁", "🎉", "🚌", "📘", "🧈", "🐻", "⚾"], // B (banana replaced with 🎉)
-  ["🎅", "⭐", "🧦", "🍓", "🚢", "🎷", "✂️", "🛰️"], // S
-  ["🎁", "📱", "🍕", "🖊️", "🛩️", "🐼", "🧩", "🏓"], // P
-  ["🎄", "🧸", "🌮", "📺", "🚆", "🎟️", "⏰", "🗼"]  // T
+  ["🐱", "🎩", "🦇", "🐱", "🦇", "🦇", "🐱", "🎩"], 
+  ["🎂", "🐍", "🎂", "🐍", "🎂", "🐍", "🎂", "🐍"],
+  ["🚗", "⭐", "⭐", "🚗", "🚗", "🚗", "⭐", "🚗"],
+  ["🐝", "🌳", "🔑", "🔑", "🐝", "🌳", "🌳", "🐝"],
+  ["bit", "beat", "bet", "bet", "bit", "beat", "bit", "bet"]
+
 ];
 
 const BEAT_URL = "metronome.mp3";
@@ -124,7 +125,7 @@ export default function SayTheWordGame() {
 
       {/* Game Container */}
       <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 w-full max-w-md text-center z-10">
-        <h1 className="text-2xl sm:text-3xl font-extrabold mb-4 text-red-700">
+        <h1 className="text-2xl sm:text-2xl font-extrabold mb-4 text-red-700">
           🎄 Word Beat Challenge 🎄
         </h1>
 
