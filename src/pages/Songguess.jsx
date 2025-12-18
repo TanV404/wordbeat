@@ -22,6 +22,9 @@ const SONG_CARDS = [
   { emojis: ["🌸", "🎨", "💓", "🖊️", "📝"], answer: "Phoolon ke rang se" },
   { emojis: ["😃", "😊"], answer: "Ankhein khuli ho ya ho band" },
   { emojis: ["2️⃣", "🧀", "👌", "👌"], answer: "Tu cheez badi hai mast mast" },
+  { emojis: ["1️⃣", "👧", "👀", "😇"], answer: "Ek ladki ko dekha toh aisa laga" },
+  { emojis: ["👀", "🔫", "👧", "👌"], answer: "Ankhiyoon se goli maare" },
+  { emojis: ["🕐", "🪩", "💃", "🕺"], answer: "It's the time to disco" },
 ];
 
 /* ================= COMPONENT ================= */
@@ -104,7 +107,7 @@ export default function Songguess() {
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center p-4">
       <div className="bg-white bg-opacity-80 rounded-2xl shadow-xl p-6 w-full max-w-lg text-center">
         <header className="mb-5">
-          <h1 className="text-2xl font-bold mb-4 text-red-700">
+          <h1 className="text-2xl font-bold mb-2 text-red-700">
             🎵 Guess the Song 🎵
           </h1>
           <p className="text-gray-500 mb-4 italic">
@@ -114,7 +117,7 @@ export default function Songguess() {
 
         {!isGameStarted && (
           <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left text-gray-700">
-            <p className="font-bold text-red-800 mb-2">Game Tutorial:</p>
+            <p className="font-bold text-red-800 mb-2">Tutorial:</p>
             <ul className="list-disc list-inside text-sm space-y-1">
               <li>Look at the emojis displayed.</li>
               <li>Guess the song they represent.</li>
@@ -127,7 +130,7 @@ export default function Songguess() {
         {!isGameStarted ? (
           <button
             onClick={startGame}
-            className={`${buttonClass} bg-gradient-to-r from-red-500 to-red-700`}
+            className={`px-12 py-4 text-white bg-gradient-to-r from-red-500 to-red-700 rounded-2xl font-semibold text-xl hover:bg-red-500 transition-all active:scale-95 shadow-xl shadow-red-900/20`}
           >
             🎅 Start Game
           </button>
