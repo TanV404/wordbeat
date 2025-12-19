@@ -4,35 +4,58 @@ import { RotateCcw } from "lucide-react";
 /* ================= CONFIG ================= */
 const TOTAL_ROUNDS = 5;
 const TILES = 8;
-const ROUND_DURATION = 2000; // 2 seconds to complete all 8 tiles
-const TILE_INTERVAL = ROUND_DURATION / TILES; // 250ms per tile
+const ROUND_DURATION = 2400;
+const TILE_INTERVAL = ROUND_DURATION / TILES;
 
-const STAGGER_START = 500;   // tiles animate in
-const HIGHLIGHT_START = 5500; // highlight starts
+const STAGGER_START = 1000;
+const HIGHLIGHT_START = 5000;
 
 const WORD_SETS_POOL = [
-  ["🐱", "🎩", "🦇"], ["🔑", "🌳", "3️⃣"], ["🐶", "🪵", "🐸"],
-  ["🧦", "🪨", "🔒"], ["🐝", "🍵", "🔑"], ["📌", "🖊️", "🍳"],
-  ["snow", "slow", "glow"], ["funny", "money", "sunny"],
-  ["wish", "fish", "dish"], ["sing", "ring", "king"],
-  ["tic", "tac", "toe"], ["run", "sun", "fun"], ["bell", "well", "tell"], ["sea", "sells", "shells"], 
+  ["🐱", "🎩", "🦇"],
+  ["🔑", "🌳", "3️⃣"],
+  ["🐶", "🪵", "🐸"],
+  ["🧦", "🪨", "🔒"],
+  ["🐝", "🍵", "🔑"],
+  ["📌", "🖊️", "🍳"],
+  ["snow", "slow", "glow"],
+  ["funny", "money", "sunny"],
+  ["wish", "fish", "dish"],
+  ["sing", "ring", "king"],
+  ["tic", "tac", "toe"],
+  ["run", "sun", "fun"],
+  ["bell", "well", "tell"],
+  ["sea", "sells", "shells"],
 ];
 
 const BEAT_URL = "whistle_crop.mp3";
 
-// Helper to map emoji/text to name
+/* ================= HELPERS ================= */
 const getEmojiName = (emoji) => {
-  const EMOJI_NAMES = {
-    "🐱": "Cat", "🎩": "Hat", "🦇": "Bat",
-    "🔑": "Key", "🌳": "Tree", "3️⃣": "Three",
-    "🐶": "Dog", "🪵": "Log", "🐸": "Frog",
-    "🧦": "Sock", "🪨": "Rock", "🔒": "Lock",
-    "🐝": "Bee", "🍵": "Tea", "📌": "Pin",
-    "🖊️": "Pen", "🍳": "Egg",
+  const MAP = {
+    "🐱": "Cat",
+    "🎩": "Hat",
+    "🦇": "Bat",
+    "🔑": "Key",
+    "🌳": "Tree",
+    "3️⃣": "Three",
+    "🐶": "Dog",
+    "🪵": "Log",
+    "🐸": "Frog",
+    "🧦": "Sock",
+    "🪨": "Rock",
+    "🔒": "Lock",
+    "🐝": "Bee",
+    "🍵": "Tea",
+    "📌": "Pin",
+    "🖊️": "Pen",
+    "🍳": "Pan",
   };
-  return EMOJI_NAMES[emoji] || ""; // return empty string for words
+  return MAP[emoji] || "";
 };
 
+const isEmoji = (value) => /\p{Extended_Pictographic}/u.test(value);
+
+/* ================= COMPONENT ================= */
 export default function Wordbeat() {
   const [round, setRound] = useState(1);
   const [activeTile, setActiveTile] = useState(-1);
@@ -40,11 +63,16 @@ export default function Wordbeat() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isAnimatingIn, setIsAnimatingIn] = useState(false);
   const [roundComplete, setRoundComplete] = useState(false);
+  const [countdownText, setCountdownText] = useState("");
 
   const [emojiSets] = useState(() => {
-    const set = WORD_SETS_POOL[Math.floor(Math.random() * WORD_SETS_POOL.length)];
+    const set =
+      WORD_SETS_POOL[Math.floor(Math.random() * WORD_SETS_POOL.length)];
     return Array.from({ length: TOTAL_ROUNDS }, () =>
-      Array.from({ length: TILES }, () => set[Math.floor(Math.random() * set.length)])
+      Array.from(
+        { length: TILES },
+        () => set[Math.floor(Math.random() * set.length)]
+      )
     );
   });
 
@@ -60,48 +88,53 @@ export default function Wordbeat() {
     const roundNumber = roundIdx + 1;
     setRoundComplete(false);
 
-    // Play beat at round start
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    }
+    audioRef.current.currentTime = 0;
+    audioRef.current.play();
 
-    // Staggered entry
-    const entryTimer = setTimeout(() => {
+    setTimeout(() => {
       setRound(roundNumber);
       setIsAnimatingIn(true);
       setActiveTile(-1);
     }, STAGGER_START);
 
-    // Highlight sequence
-    const highlightTimer = setTimeout(() => {
-      setIsAnimatingIn(false);
-      let currentTile = 0;
+    const countdownSteps = [
+      { time: 4000, value: "1" },
+      { time: 4350, value: "2" },
+      { time: 4700, value: "3" },
+      { time: 4890, value: "GO" },
+    ];
 
-      const beatInterval = setInterval(() => {
-        setActiveTile(currentTile);
-        currentTile++;
+    countdownSteps.forEach(({ time, value }) => {
+      timeoutsRef.current.push(
+        setTimeout(() => setCountdownText(value), time)
+      );
+    });
 
-        if (currentTile >= TILES) {
-          clearInterval(beatInterval);
+    timeoutsRef.current.push(
+      setTimeout(() => setCountdownText(""), 5000)
+    );
 
-          setTimeout(() => {
-            setActiveTile(-1);
-            setRoundComplete(true);
+    timeoutsRef.current.push(
+      setTimeout(() => {
+        setIsAnimatingIn(false);
+        let i = 0;
 
-            if (audioRef.current) audioRef.current.pause();
+        const interval = setInterval(() => {
+          setActiveTile(i++);
+          if (i >= TILES) {
+            clearInterval(interval);
+            setTimeout(() => {
+              setActiveTile(-1);
+              setRoundComplete(true);
+              audioRef.current.pause();
+              if (roundNumber === TOTAL_ROUNDS) setIsGameOver(true);
+            }, TILE_INTERVAL);
+          }
+        }, TILE_INTERVAL);
 
-            if (roundNumber === TOTAL_ROUNDS) {
-              setTimeout(() => setIsGameOver(true), 800);
-            }
-          }, TILE_INTERVAL);
-        }
-      }, TILE_INTERVAL);
-
-      timeoutsRef.current.push(beatInterval);
-    }, HIGHLIGHT_START);
-
-    timeoutsRef.current.push(entryTimer, highlightTimer);
+        timeoutsRef.current.push(interval);
+      }, HIGHLIGHT_START)
+    );
   };
 
   const startGame = () => {
@@ -114,120 +147,123 @@ export default function Wordbeat() {
     scheduleRound(round);
   };
 
-  const restartGame = () => {
-    clearAllTimers();
-    window.location.reload();
-  };
+  const restartGame = () => window.location.reload();
 
-  useEffect(() => {
-    return () => clearAllTimers();
-  }, []);
+  useEffect(() => () => clearAllTimers(), []);
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center p-4">
-      <div className="bg-white bg-opacity-80 rounded-2xl shadow-xl p-6 w-full max-w-lg text-center">
-        <header className="mb-5">
-          <h1 className="text-2xl font-bold mb-2 text-red-700">
-            🥁 Word Beat Challenge 🥁
-          </h1>
-          <p className="text-gray-500 mb-4 italic">
-            Master the rhythm of the set!
-          </p>
-        </header>
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md sm:max-w-xl text-center relative">
+        <h1 className="text-3xl sm:text-4xl font-bold text-red-700 mb-2">
+          🥁 Word Beat Challenge 🥁
+        </h1>
+        <p className="text-gray-500 italic text-lg mb-4">
+          Master the rhythm of the set!
+        </p>
 
-        <main className="flex flex-col justify-center">
-          {!hasStarted && (
-            <div className="space-y-1">
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left text-gray-700">
-                <p className="font-bold text-red-800 mb-2">Tutorial:</p>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Watch tiles light up on the beat.</li>
-                  <li>Say the matching word or sound.</li>
-                  <li>Speed increases every round.</li>
-                  <li>Final round is a word challenge!</li>
-                </ul>
-              </div>
-
-              <button
-                onClick={startGame}
-                className="px-12 py-4 text-white bg-gradient-to-r from-red-500 to-red-700 rounded-2xl font-semibold text-xl hover:bg-red-500 transition-all active:scale-95 shadow-xl shadow-red-900/20"
-              >
-                🎅 Start Game
-              </button>
+        {!hasStarted && (
+          <>
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
+              <p className="font-bold text-red-800 mb-2">Tutorial:</p>
+              <ul className="list-disc list-inside text-lg space-y-1">
+                <li>Watch tiles light up on the beat</li>
+                <li>Say the matching word or sound</li>
+                <li>Speed increases every round</li>
+                <li>Final round is a word challenge</li>
+              </ul>
             </div>
-          )}
+            <button
+              onClick={startGame}
+              className="px-12 py-4 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-2xl font-bold text-xl shadow-xl"
+            >
+              🎅 Start Game
+            </button>
+          </>
+        )}
 
-          {hasStarted && !isGameOver && (
-            <>
-              <div className="flex justify-center items-center mb-4 px-2">
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">
-                  Round {round} / {TOTAL_ROUNDS}
-                </span>
-              </div>
+        {hasStarted && !isGameOver && (
+          <>
+            {/* ROUND + WORD */}
+            <div className="mb-4 space-y-2">
+              <span className="inline-block bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-bold">
+                Round {round} / {TOTAL_ROUNDS}
+              </span>
 
-              <div className="grid grid-cols-4 gap-4">
-                {emojiSets[round - 1].map((emoji, i) => (
-                  <div
-                    key={`${round}-${i}`}
-                    className={`flex items-center justify-center rounded-2xl border-4 text-3xl transition-all
-                      ${isAnimatingIn ? "animate-entry" : ""}
-                      ${
-                        activeTile === i
-                          ? "border-red-500 bg-red-50 scale-110 shadow-lg z-10"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    style={{
-                      padding: "1.5rem", // added padding
-                      animationDelay: isAnimatingIn ? `${i * 0.15}s` : "0s",
-                      transitionDuration: "100ms",
-                    }}
-                  >
-                    {emoji}
+              {activeTile >= 0 &&
+                getEmojiName(emojiSets[round - 1][activeTile]) && (
+                  <div className="text-2xl sm:text-3xl font-semibold text-red-700">
+                    "{getEmojiName(emojiSets[round - 1][activeTile])}"
                   </div>
-                ))}
-              </div>
-
-              {/* Display name of highlighted tile only if it's an emoji */}
-              {activeTile >= 0 && getEmojiName(emojiSets[round - 1][activeTile]) && (
-                <div className="mt-4 text-3xl font-semibold text-red-700">
-                  "{getEmojiName(emojiSets[round - 1][activeTile])}"
-                </div>
-              )}
-
-              {/* Next Round button */}
-              {roundComplete && round < TOTAL_ROUNDS && (
-                <button
-                  onClick={nextRound}
-                  className="mt-4 px-8 py-3 bg-red-600 text-white rounded-xl font-bold text-sm shadow-lg active:scale-95"
-                >
-                  Next Round
-                </button>
-              )}
-            </>
-          )}
-
-          {isGameOver && (
-            <div className="space-y-6 animate-in zoom-in duration-500">
-              <h2 className="text-5xl font-black text-red-500 italic">
-                FINISHED
-              </h2>
-              <button
-                onClick={restartGame}
-                className="flex items-center gap-2 mx-auto px-8 py-3 bg-white text-black rounded-xl font-bold uppercase text-xs transition-colors"
-              >
-                <RotateCcw size={16} /> Play Again
-              </button>
+                )}
             </div>
-          )}
-        </main>
+
+            {/* 1-2-3-GO (PRESERVED) */}
+            {countdownText && (
+              <div className="mb-2 text-4xl sm:text-5xl font-black text-red-600 animate-pulse">
+                {countdownText}
+              </div>
+            )}
+
+            {/* GRID */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {emojiSets[round - 1].map((item, i) => (
+                <div
+                  key={i}
+                  className={`flex items-center justify-center rounded-2xl border-4 transition-all
+                    ${
+                      isEmoji(item)
+                        ? "text-5xl sm:text-6xl"
+                        : "text-3xl sm:text-4xl font-semibold"
+                    }
+                    ${isAnimatingIn ? "animate-entry" : ""}
+                    ${
+                      activeTile === i
+                        ? "border-red-500 bg-red-50 scale-110 shadow-xl"
+                        : "border-gray-200 bg-white"
+                    }`}
+                  style={{ padding: "clamp(1.25rem, 4vw, 2rem)" }}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            {roundComplete && round < TOTAL_ROUNDS && (
+              <button
+                onClick={nextRound}
+                className="mt-6 px-10 py-4 bg-red-600 text-white rounded-2xl font-bold shadow-xl"
+              >
+                Next Round
+              </button>
+            )}
+          </>
+        )}
+
+        {isGameOver && (
+          <div className="space-y-6">
+            <h2 className="text-5xl font-black text-red-500">FINISHED</h2>
+            <button
+              onClick={restartGame}
+              className="mx-auto flex items-center gap-2 px-8 py-3 bg-white rounded-xl font-bold"
+            >
+              <RotateCcw size={16} /> Play Again
+            </button>
+          </div>
+        )}
 
         <audio ref={audioRef} src={BEAT_URL} preload="auto" />
       </div>
 
       <style>{`
         @keyframes entry {
-          0% { opacity: 0; transform: translateY(40px) scale(0.7); filter: blur(4px); }
-          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+          from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.7);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
         .animate-entry {
           animation: entry 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;

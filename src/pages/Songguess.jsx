@@ -105,12 +105,12 @@ export default function Songguess() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center p-4">
-      <div className="bg-white bg-opacity-80 rounded-2xl shadow-xl p-6 w-full max-w-lg text-center">
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-xl text-center">
         <header className="mb-5">
-          <h1 className="text-2xl font-bold mb-2 text-red-700">
+          <h1 className="text-4xl font-bold mb-1 text-red-700">
             🎵 Guess the Song 🎵
           </h1>
-          <p className="text-gray-500 mb-4 italic">
+          <p className="text-gray-500 mb-4 italic text-lg">
             Decode the emojis and guess the song before time runs out!
           </p>
         </header>
@@ -118,7 +118,7 @@ export default function Songguess() {
         {!isGameStarted && (
           <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left text-gray-700">
             <p className="font-bold text-red-800 mb-2">Tutorial:</p>
-            <ul className="list-disc list-inside text-sm space-y-1">
+            <ul className="list-disc list-inside text-lg space-y-1">
               <li>Look at the emojis displayed.</li>
               <li>Guess the song they represent.</li>
               <li>Use the "Show Answer" button if you are stuck.</li>
