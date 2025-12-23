@@ -29,7 +29,7 @@ const WORD_SETS_POOL = [
   ["🐛", "☕", "🔌"], ["🌧️", "🚂", "🧠"], ["🐳", "🐌", "✉️"], 
   ["cake", "bake", "lake"], ["mice", "rice", "ice"], ["hop", "pop", "top"],
   ["fly", "sky", "high"], ["tall", "wall", "ball"], ["blue", "glue", "shoe"],
-  ["wet", "jet", "net"], ["cook", "book", "look"], ["game", "name", "same"]
+   ["cook", "book", "look"], ["game", "name", "same"]
 ];
 
 const BEAT_URL = "whistle_crop.mp3";
