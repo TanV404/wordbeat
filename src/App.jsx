@@ -106,7 +106,7 @@ export default function App() {
               className={`transition-colors ${activeTab === "songguess" ? "text-yellow-400" : "text-slate-400"}`}
             />
           }
-          label="Guess Song"
+          label="Guess the Song"
         />
       </div>
 
