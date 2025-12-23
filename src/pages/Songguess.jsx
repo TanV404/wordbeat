@@ -13,38 +13,36 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ================= DATA ================= */
+// ✨ UPDATED: Add 'audio' paths to your song files here
 const SONG_CARDS = [
-  { emojis: ["🟦", "🟦", "🌃", "🌕", "💓"], answer: "Neele neele ambar" },
-  { emojis: ["😄", "😄", "✂️", "🛣️"], answer: "Haste haste kat jayen raste" },
-  { emojis: ["🚶", "🚶‍➡️", "🤷‍♂️", "🚶"], answer: "Idhaar chala me udhar chala" },
-  // { emojis: ["🔫", "🧠", "🧠", "🔊"], answer: "Goli maar bheje mein" },
-  { emojis: ["☀️", "🌅", "🌕", "🔥"], answer: "Sooraj hua madham" },
-  { emojis: ["7️⃣", "🌊", "🏃‍♀️"], answer: "Sath samundar paar" },
-  { emojis: ["⭕", "🦢"], answer: "O Hansini" },
-  { emojis: ["🕉️", "👧", "🕉️"], answer: "Om Shanti Om" },
-  { emojis: ["🚶‍➡️", "🚶‍➡️", "🎵", "🙋‍♂️", "❌"], answer: "Chalte chalte" },
-  { emojis: ["🌸", "🎨", "💓", "🖊️", "📝"], answer: "Phoolon ke rang se" },
-  { emojis: ["👀","😃", "😊"], answer: "Ankhein khuli ho ya ho band" },
-  { emojis: ["🫵", "🧀", "👌", "👌"], answer: "Tu cheez badi hai mast mast" },
-  { emojis: ["1️⃣", "👧", "👀", "😇"], answer: "Ek ladki ko dekha toh aisa laga" },
-  { emojis: ["👀", "🔫", "👧", "👌"], answer: "Ankhiyoon se goli maare" },
-  { emojis: ["🕐", "🪩", "💃", "🕺"], answer: "It's the time to disco" },
-  { emojis: ["🌹", "👀"], answer: "Gulabi Ankhein" },
-  { emojis: ["1️⃣", "👽", "💃", "🤝"], answer: "Ek ajnabee haseena se" },
-  { emojis: ["💭", "👸", "🚂", "🌄"], answer: "Mere sapno ki rani" },
-  { emojis: ["👉","🤝", "❌", "💔", "🏍️"], answer: "Yeh dosti hum nahi todenge" },
-  { emojis: ["❓", "❓", "❤️", "💭"], answer: "Kabhi kabhi mere dil mein" },
-  { emojis: ["⏳", "⏳", "❤️", "🎟️"], answer: "Pal pal dil ke paas" },
-  { emojis: ["👉","⚫", "⚫", "👀"], answer: "Yeh kaali kaali aankhen" },
-  { emojis: ["😄", "😢", "😄", "😢"], answer: "Kabhi khushi kabhie gham" },
-  { emojis: ["🍃", "7️⃣", "7️⃣","🌥️" ], answer: "Hawa ke saath saath" },
-  { emojis: ["👉", "🌃", "👉","🌥️" ], answer: "Yeh raate yeh mausam" },
-  { emojis: ["⭕","🙋‍♂️", "💓", "🔗" ], answer: "O mere dil ke chain" },
-  { emojis: ["🖊️","💌", "🫵" ], answer: "Likhe joh khat tujhe" },
+  { emojis: ["🟦", "🟦", "🌃", "🌙"], answer: "Neele Neele Ambar Par", audio: "neele neele.mp3" },
+  { emojis: ["😄", "😄", "✂️", "🛣️"], answer: "Hanste Hanste Kat Jaye Raaste", audio: "haste haste.mp3" },
+  { emojis: ["🚶", "🚶‍➡️", "🤷‍♂️", "🚶"], answer: "Idhar Chala Main Udhar Chala", audio: "idhar chala.mp3" },
+  { emojis: ["7️⃣", "🌊", "🏃‍♀️"], answer: "Saat Samundar Paar", audio: "sath_samundar.mp3" },
+  { emojis: ["⭕", "🦢"], answer: "Oh Hansini", audio: "o_hansini.mp3" },
+  { emojis: ["🕉️", "🔇", "🕉️"], answer: "Om Shanti Om", audio: "om_shanti_om.mp3" },
+  { emojis: ["🚶‍➡️", "🚶‍➡️","🙋‍♂️", "🎤",  "👋"], answer: "Chalte Chalte", audio: "chalte_chalte.mp3" },
+  { emojis: ["🌸", "🎨", "💓", "🖊️", "📝"], answer: "Phoolon Ke Rang Se", audio: "phoolon_ke.mp3" },
+  { emojis: ["👀","😃", "🫣"], answer: "Aankhein Khuli", audio: "ankhein_khuli.mp3" },
+  { emojis: ["🕐", "🪩", "💃", "🕺"], answer: "It's the Time to Disco", audio: "time_to_disco.mp3" },
+  { emojis: ["🌹", "👀"], answer: "Gulabi Aankhen", audio: "gulabi_ankhein.mp3" },
+  { emojis: ["1️⃣", "👽", "💃", "🤝"], answer: "Ek Ajanabee Haseena Se", audio: "ek_ajnabee.mp3" },
+  { emojis: ["😴","💭", "👸", "🚂", "🌄"], answer: "Mere Sapnon Ki Rani", audio: "mere_sapno.mp3" },
+  { emojis: ["👉","👦🤝👦", "❌", "🏍️"], answer: "Yeh Dosti Hum Nahin Todenge", audio: "yeh_dosti.mp3" },
+  { emojis: ["❓", "❓", "❤️", "💭"], answer: "Kabhi Kabhi Mere Dil Mein", audio: "kabhi_kabhi.mp3" },
+  { emojis: ["⏳", "⏳", "❤️", "🎫"], answer: "Pal Pal Dil Ke Paas", audio: "pal_pal.mp3" },
+  { emojis: ["👉","⚫", "⚫", "👀"], answer: "Yeh Kaali Kaali Aankhein", audio: "kali_kali.mp3" },
+  { emojis: ["😄", "😢", "😄", "😢"], answer: "Kabhi Khushi Kabhie Gham", audio: "k3g.mp3" },
+  { emojis: ["🍃", "7️⃣", "7️⃣","⛰️" ], answer: "O Saathi Chal", audio: "hawa_ke_saath.mp3" },
+  { emojis: ["👉", "🌃", "👉","🌥️" ], answer: "Yeh Raatein Yeh Mausam", audio: "yeh_raate.mp3" },
+  { emojis: ["⭕","🙋‍♂️", "💓", "🔗" ], answer: "O Mere Dil Ke Chain", audio: "o_mere_dil.mp3" },
+  { emojis: ["🖊️","💌", "🫵","🙇‍♂️" ], answer: "Likhe Jo Khat Tujhe", audio: "likhe_jo_khat.mp3" },
+  { emojis: ["☀️", "🌕", "🔥", "🌅"], answer: "Suraj Hua Maddham", audio: "sooraj_hua.mp3" },
 ];
 
 /* ================= CONFIG ================= */
 const ROUND_TIME = 30;
+const INTRO_MUSIC_URL = "SongGuessIntro.mp3"; 
 
 /* ================= MOTION VARIANTS ================= */
 const containerVariants = {
@@ -75,6 +73,8 @@ export default function Songguess() {
   const [roundData, setRoundData] = useState([]);
 
   const timerRef = useRef(null);
+  const introAudioRef = useRef(null); 
+  const answerAudioRef = useRef(null); // ✨ NEW: Ref for playing the answer song
 
   // Snowflakes
   const snowflakes = useMemo(() => {
@@ -89,8 +89,26 @@ export default function Songguess() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsInitialLoading(false), 2600);
-    return () => clearTimeout(timer);
+    // Play intro music on mount
+    if (introAudioRef.current) {
+        introAudioRef.current.currentTime = 0;
+        introAudioRef.current.play().catch(e => console.log("Intro autoplay blocked:", e));
+    }
+
+    const timer = setTimeout(() => {
+        setIsInitialLoading(false);
+    }, 2600);
+
+    return () => {
+        clearTimeout(timer);
+        if (introAudioRef.current) {
+            introAudioRef.current.pause();
+        }
+        // Cleanup answer audio
+        if (answerAudioRef.current) {
+            answerAudioRef.current.pause();
+        }
+    };
   }, []);
 
   useEffect(() => {
@@ -118,6 +136,12 @@ export default function Songguess() {
   }, [isRoundActive]);
 
   const startGame = () => {
+    // Stop intro music when game starts
+    if (introAudioRef.current) {
+        introAudioRef.current.pause();
+        introAudioRef.current.currentTime = 0;
+    }
+
     setIsGameStarted(true);
     setIsRoundActive(true);
     setTimeLeft(ROUND_TIME);
@@ -128,9 +152,22 @@ export default function Songguess() {
     clearInterval(timerRef.current);
     setShowAnswer(true);
     setIsRoundActive(false);
+
+    // ✨ NEW: Play the answer song associated with the current card
+    const currentCard = roundData[round - 1];
+    if (answerAudioRef.current && currentCard?.audio) {
+        answerAudioRef.current.src = currentCard.audio;
+        answerAudioRef.current.play().catch(e => console.log("Answer play blocked:", e));
+    }
   };
 
   const nextRound = () => {
+    // ✨ NEW: Stop answer audio when moving to next round
+    if (answerAudioRef.current) {
+        answerAudioRef.current.pause();
+        answerAudioRef.current.currentTime = 0;
+    }
+
     if (round < roundData.length) {
       setRound((prev) => prev + 1);
       setTimeLeft(ROUND_TIME);
@@ -142,12 +179,24 @@ export default function Songguess() {
   };
 
   const restartGame = () => {
+    // ✨ NEW: Stop answer audio on restart
+    if (answerAudioRef.current) {
+        answerAudioRef.current.pause();
+        answerAudioRef.current.currentTime = 0;
+    }
+
     setRound(1);
     setTimeLeft(ROUND_TIME);
     setIsRoundActive(false);
     setIsGameStarted(false);
     setShowAnswer(false);
     setRoundData([]); 
+    
+    // Optional: Play intro music again on restart
+    if (introAudioRef.current) {
+        introAudioRef.current.currentTime = 0;
+        introAudioRef.current.play().catch(e => console.log(e));
+    }
   };
 
   const currentCard = roundData[round - 1];
@@ -184,11 +233,9 @@ export default function Songguess() {
              >
                <div className="text-center">
                  <div className="relative mb-6 lg:mb-10 flex justify-center">
-                    {/* Responsive Spinner Size */}
                     <Disc3 className="w-12 h-12 sm:w-16 sm:h-16 lg:w-24 lg:h-24 text-yellow-500 animate-[spin_3s_linear_infinite]" />
                  </div>
 
-                 {/* Responsive Title Text */}
                  <h2 className="text-sm min-[350px]:text-base sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-black text-white tracking-widest uppercase flex flex-row items-center gap-2 sm:gap-3 justify-center mb-4 lg:mb-8 whitespace-nowrap">
                    Curating Emoji-Encoded Music <Sparkles className="text-yellow-400 animate-pulse w-4 h-4 sm:w-6 sm:h-6 lg:w-10 lg:h-10" />
                  </h2>
@@ -232,7 +279,6 @@ export default function Songguess() {
             <div className="flex-none h-[15vh] min-h-[80px] max-h-[140px] w-full flex items-end justify-center pb-2 z-20">
                 {!isGameStarted ? (
                     <div className="flex flex-col items-center z-10 animate-in fade-in duration-300">
-                        {/* Responsive Header Title */}
                         <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] text-center">
                            🎵 Guess the Song 🎵
                         </h1>
@@ -243,7 +289,6 @@ export default function Songguess() {
                         key="timer"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        // Responsive Timer
                         className={`flex items-center gap-3 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] z-10 ${timeLeft < 10 ? "text-red-400 animate-pulse" : "text-white"}`}
                     >
                         <Timer className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20" strokeWidth={2.5} />
@@ -274,7 +319,6 @@ export default function Songguess() {
 
                     <button
                         onClick={startGame}
-                        // Massive Start Button for Desktop
                         className="group relative w-full max-w-xs lg:max-w-md px-8 py-4 lg:px-14 lg:py-6 bg-gradient-to-b from-red-600 to-red-800 text-white rounded-2xl font-bold text-lg sm:text-2xl lg:text-4xl shadow-[0_0_25px_rgba(220,38,38,0.5)] hover:shadow-[0_0_40px_rgba(220,38,38,0.7)] hover:scale-105 transition-all duration-300 overflow-hidden border-t border-red-400"
                     >
                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12 origin-bottom"></div>
@@ -293,20 +337,20 @@ export default function Songguess() {
                             <div className="flex flex-nowrap items-center justify-center gap-1 sm:gap-3 md:gap-6 lg:gap-8 w-full">
                                 {currentCard.emojis.map((emoji, i) => (
                                     <React.Fragment key={i}>
-                                        <motion.div 
-                                          variants={itemVariants} 
-                                          className="text-3xl min-[400px]:text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl filter drop-shadow-[0_8px_8px_rgba(0,0,0,0.5)] hover:scale-110 transition-transform cursor-default whitespace-nowrap"
-                                        >
-                                            {emoji}
-                                        </motion.div>
-                                        {i < currentCard.emojis.length - 1 && (
                                             <motion.div 
                                               variants={itemVariants} 
-                                              className="text-xl min-[400px]:text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white/30 select-none pb-1 sm:pb-3"
+                                              className="text-3xl min-[400px]:text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl filter drop-shadow-[0_8px_8px_rgba(0,0,0,0.5)] hover:scale-110 transition-transform cursor-default whitespace-nowrap"
                                             >
-                                              +
+                                                {emoji}
                                             </motion.div>
-                                        )}
+                                            {i < currentCard.emojis.length - 1 && (
+                                                <motion.div 
+                                                  variants={itemVariants} 
+                                                  className="text-xl min-[400px]:text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white/30 select-none pb-1 sm:pb-3"
+                                                >
+                                                    +
+                                                </motion.div>
+                                            )}
                                     </React.Fragment>
                                 ))}
                             </div>
@@ -365,6 +409,9 @@ export default function Songguess() {
           </motion.div>
         )}
       </AnimatePresence>
+      <audio ref={introAudioRef} src={INTRO_MUSIC_URL} preload="auto" />
+      {/* ✨ NEW: Answer audio player */}
+      <audio ref={answerAudioRef} preload="auto" />
     </div>
   );
 }

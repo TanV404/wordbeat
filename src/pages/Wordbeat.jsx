@@ -33,6 +33,8 @@ const WORD_SETS_POOL = [
 ];
 
 const BEAT_URL = "whistle_crop.mp3";
+// ✨ NEW: Add your intro song file path here
+const INTRO_MUSIC_URL = "WordBeatIntro.mp3"; 
 
 /* ================= HELPERS ================= */
 const getEmojiName = (emoji) => {
@@ -81,7 +83,8 @@ export default function Wordbeat() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [emojiSets, setEmojiSets] = useState(() => generateGameData());
 
-  const audioRef = useRef(null);
+  const audioRef = useRef(null);       // Game beat
+  const introAudioRef = useRef(null);  // Intro music ref
   const timers = useRef([]);
 
   // Snowflakes
@@ -141,7 +144,15 @@ export default function Wordbeat() {
     );
   };
 
-  const startGame = () => { setHasStarted(true); scheduleRound(1); };
+  const startGame = () => { 
+    // ✨ UPDATED: Stop music here when user clicks START
+    if (introAudioRef.current) {
+        introAudioRef.current.pause();
+        introAudioRef.current.currentTime = 0;
+    }
+    setHasStarted(true); 
+    scheduleRound(1); 
+  };
 
   const nextRound = () => {
     clearTimers();
@@ -166,13 +177,36 @@ export default function Wordbeat() {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
     }
+    // Optional: If you want intro music to restart when going back to menu, 
+    // you would need logic here, but standard reset usually goes to start screen.
+    // If you want to play intro music on reset (returning to start screen):
+    /*
+    if (introAudioRef.current) {
+        introAudioRef.current.currentTime = 0;
+        introAudioRef.current.play().catch(e => console.log(e));
+    }
+    */
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsInitialLoading(false), 2600);
+    // Play intro music on mount
+    if (introAudioRef.current) {
+      introAudioRef.current.volume = 0.6; 
+      introAudioRef.current.play().catch(e => console.log("Intro autoplay blocked:", e));
+    }
+
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+      // ✨ UPDATED: Music pause logic REMOVED from here so it continues playing
+    }, 2600);
+
     return () => {
       clearTimeout(timer);
       clearTimers();
+      // Cleanup intro music on unmount
+      if (introAudioRef.current) {
+        introAudioRef.current.pause();
+      }
     };
   }, []);
 
@@ -212,7 +246,6 @@ export default function Wordbeat() {
                 {Array.from({ length: 9 }).map((_, i) => (
                     <motion.div
                         key={i}
-                        // Optimized for Laptop (lg:w-6)
                         className="w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6 rounded-[2px] bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]"
                         animate={{ 
                             scale: [0.8, 1.2, 0.8], opacity: [0.3, 1, 0.3],
@@ -224,9 +257,8 @@ export default function Wordbeat() {
               </div>
 
               <div className="text-center w-full">
-                {/* Optimized Title: Smaller than previous to fit laptop screens better */}
                 <h2 className="text-lg min-[375px]:text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-widest uppercase flex flex-row items-center gap-2 sm:gap-3 justify-center mb-6 whitespace-nowrap">
-                  Generating Sequences <Sparkles className="text-yellow-400 animate-pulse w-5 h-5 sm:w-8 sm:h-8" />
+                  Generating Sequences <Sparkles className="text-yellow-400 animate-pulse w-4 h-4 sm:w-6 sm:h-6 lg:w-10 lg:h-10" />
                 </h2>
                 <div className="flex flex-col items-center gap-4 w-full">
                   <p className="text-red-500 text-xs sm:text-base lg:text-lg font-bold tracking-[0.2em] uppercase animate-pulse">
@@ -266,7 +298,6 @@ export default function Wordbeat() {
             <div className="flex-none h-[15vh] min-h-[80px] max-h-[140px] w-full flex items-end justify-center pb-2 z-20">
               {!hasStarted ? (
                 <div className="flex flex-col items-center z-10 animate-in fade-in slide-in-from-top-4 duration-500">
-                  {/* Optimized Header Title for Laptop: lg:text-6xl */}
                   <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] text-center whitespace-nowrap">
                    🥁 Word Beat Challenge 🥁
                   </h1>
@@ -279,7 +310,6 @@ export default function Wordbeat() {
                     animate={{ opacity: 1, y: 0, scale: 1 }} 
                     className="flex items-center justify-center w-full px-4"
                 >
-                  {/* Active Word Size Optimized: lg:text-7xl */}
                   <span className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] text-center break-words leading-tight">
                     {displayText}
                   </span>
@@ -307,7 +337,6 @@ export default function Wordbeat() {
                     ))}
                   </div>
                   
-                  {/* Fixed Button Size: lg:text-2xl, px-10 */}
                   <button onClick={startGame} className="group relative w-full max-w-xs lg:max-w-sm px-8 py-4 lg:px-10 lg:py-5 bg-gradient-to-b from-red-600 to-red-800 text-white rounded-2xl font-bold text-lg sm:text-2xl lg:text-2xl shadow-xl hover:scale-105 transition-all overflow-hidden border-t border-red-400">
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12 origin-bottom"></div>
                     <span className="relative flex items-center justify-center gap-3 lg:gap-4">
@@ -325,7 +354,6 @@ export default function Wordbeat() {
                         initial="hidden" 
                         animate="show" 
                         exit="exit" 
-                        // Grid gap optimized for laptop: lg:gap-6
                         className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6 w-full"
                     >
                       {items.map((item, i) => (
@@ -338,7 +366,6 @@ export default function Wordbeat() {
                             boxShadow: activeTile === i ? "0 0 35px 5px rgba(220, 38, 38, 0.6)" : "0 2px 4px rgba(0,0,0,0.1)",
                             scale: activeTile === i ? 1.05 : 1
                           }}
-                          // Border width and Emoji Text Size: lg:border-6, lg:text-7xl/4xl
                           className="aspect-square w-full border-2 sm:border-4 lg:border-[6px] rounded-xl sm:rounded-3xl flex items-center justify-center shadow-sm relative overflow-hidden bg-white/95"
                         >
                           <span className={`${isEmoji(item) ? "text-5xl sm:text-6xl lg:text-7xl xl:text-8xl" : "text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase text-slate-800"}`}>
@@ -364,7 +391,6 @@ export default function Wordbeat() {
                             onClick={resetGame}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            // Button size: lg:text-lg, lg:px-8
                             className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 bg-gradient-to-b from-yellow-500 to-yellow-700 text-white rounded-xl font-bold text-sm sm:text-lg lg:text-xl shadow-lg border-t border-yellow-400/50 hover:scale-105 transition-transform"
                         >
                             <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" /> 
@@ -386,7 +412,6 @@ export default function Wordbeat() {
                             onClick={nextRound} 
                             animate={{ y: [0, -4, 0] }} 
                             transition={{ repeat: Infinity, duration: 1.5 }} 
-                            // Button size: lg:text-lg, lg:px-10
                             className="px-5 py-2 sm:px-8 sm:py-3 lg:px-10 lg:py-4 bg-gradient-to-b from-green-500 to-green-700 text-white rounded-xl font-bold text-sm sm:text-lg lg:text-xl shadow-lg border-t border-green-400 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
                             >
                             Next Round →
@@ -402,6 +427,7 @@ export default function Wordbeat() {
         )}
       </AnimatePresence>
       <audio ref={audioRef} src={BEAT_URL} preload="auto" />
+      <audio ref={introAudioRef} src={INTRO_MUSIC_URL} preload="auto" />
     </div>
   );
 }
