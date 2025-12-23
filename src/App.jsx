@@ -81,7 +81,7 @@ export default function App() {
 
       {/* --- HEADER / TABS SECTION --- */}
       {/* flex-none prevents squishing, h-14 to h-24 responsive height */}
-      <div className="flex-none relative z-30 flex items-center border-b-2 border-red-900/50 bg-slate-950/60 backdrop-blur-md shadow-2xl w-full h-14 sm:h-16 lg:h-20 xl:h-24">
+      <div className="flex-none relative z-30 flex items-center border-b-2 border-red-900/50 bg-slate-950/60 backdrop-blur-md shadow-2xl w-full h-14 sm:h-16 lg:h-20">
         <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent"></div>
 
         <TabButton

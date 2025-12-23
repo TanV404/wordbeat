@@ -25,7 +25,7 @@ const SONG_CARDS = [
   { emojis: ["🌸", "🎨", "💓", "🖊️", "📝"], answer: "Phoolon Ke Rang Se", audio: "phoolon_ke.mp3" },
   { emojis: ["👀","😃", "🫣"], answer: "Aankhein Khuli", audio: "ankhein_khuli.mp3" },
   { emojis: ["🕐", "🪩", "💃", "🕺"], answer: "It's the Time to Disco", audio: "time_to_disco.mp3" },
-  { emojis: ["🌹", "👀"], answer: "Gulabi Aankhen", audio: "gulabi_ankhein.mp3" },
+  { emojis: ["🌹", "👀"], answer: "Gulabi Ankhen", audio: "gulabi_ankhein.mp3" },
   { emojis: ["1️⃣", "👽", "💃", "🤝"], answer: "Ek Ajanabee Haseena Se", audio: "ek_ajnabee.mp3" },
   { emojis: ["😴","💭", "👸", "🚂", "🌄"], answer: "Mere Sapnon Ki Rani", audio: "mere_sapno.mp3" },
   { emojis: ["👉","👦🤝👦", "❌", "🏍️"], answer: "Yeh Dosti Hum Nahin Todenge", audio: "yeh_dosti.mp3" },
@@ -37,7 +37,7 @@ const SONG_CARDS = [
   { emojis: ["👉", "🌃", "👉","🌥️" ], answer: "Yeh Raatein Yeh Mausam", audio: "yeh_raate.mp3" },
   { emojis: ["⭕","🙋‍♂️", "💓", "🔗" ], answer: "O Mere Dil Ke Chain", audio: "o_mere_dil.mp3" },
   { emojis: ["🖊️","💌", "🫵","🙇‍♂️" ], answer: "Likhe Jo Khat Tujhe", audio: "likhe_jo_khat.mp3" },
-  { emojis: ["☀️", "🌕", "🔥", "🌅"], answer: "Suraj Hua Maddham", audio: "sooraj_hua.mp3" },
+  { emojis: ["☀️", "🌕", "🔥"], answer: "Suraj Hua Maddham", audio: "sooraj_hua.mp3" },
 ];
 
 /* ================= CONFIG ================= */
@@ -303,17 +303,24 @@ export default function Songguess() {
                 {/* TUTORIAL */}
                 {!isGameStarted && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center gap-8 lg:gap-12 w-full max-w-4xl lg:max-w-6xl h-full">
-                    <div className="grid grid-cols-3 gap-3 sm:gap-6 lg:gap-10 w-full">
+                    {/* ✨ FIXED: Replaced Grid with Flexbox for Tutorial steps */}
+                    <div className="flex flex-row items-center justify-between w-full gap-2 sm:gap-4 lg:gap-6">
                         {[
                             { icon: <Smile className="w-6 h-6 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-blue-300" />, title: "LOOK", desc: "Read emojis" },
                             { icon: <Music className="w-6 h-6 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-green-300" />, title: "THINK", desc: "Guess song" },
                             { icon: <HelpCircle className="w-6 h-6 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-red-300" />, title: "SOLVE", desc: "See answer" },
-                        ].map((step, idx) => (
-                            <div key={idx} className="bg-slate-800/40 border border-white/5 rounded-xl p-3 sm:p-6 lg:p-8 flex flex-col items-center text-center shadow-lg backdrop-blur-sm">
-                                <div className="mb-2 sm:mb-4 lg:mb-6 p-2 sm:p-3 lg:p-4 bg-white/5 rounded-full shadow-inner">{step.icon}</div>
-                                <h3 className="font-bold text-white mb-1 text-xs sm:text-lg lg:text-2xl uppercase tracking-wider">{step.title}</h3>
-                                <p className="text-[10px] sm:text-sm lg:text-lg text-slate-400 leading-tight">{step.desc}</p>
-                            </div>
+                        ].map((step, idx, arr) => (
+                            <React.Fragment key={idx}>
+                                <div className="flex-1 bg-slate-800/40 border border-white/5 rounded-xl p-3 sm:p-6 lg:p-8 flex flex-col items-center text-center shadow-lg backdrop-blur-sm min-w-0">
+                                    <div className="mb-2 sm:mb-4 lg:mb-6 p-2 sm:p-3 lg:p-4 bg-white/5 rounded-full shadow-inner">{step.icon}</div>
+                                    <h3 className="font-bold text-white mb-1 text-xs sm:text-lg lg:text-2xl uppercase tracking-wider">{step.title}</h3>
+                                    <p className="text-[10px] sm:text-sm lg:text-lg text-slate-400 leading-tight">{step.desc}</p>
+                                </div>
+                                {/* ✨ ADDED: Arrows between cards */}
+                                {idx < arr.length - 1 && (
+                                    <ArrowRight className="w-4 h-4 sm:w-6 sm:h-6 lg:w-10 lg:h-10 text-white/30 flex-none" strokeWidth={3} />
+                                )}
+                            </React.Fragment>
                         ))}
                     </div>
 
