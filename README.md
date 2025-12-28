@@ -1,10 +1,4 @@
-# 🎮 Music & Word Games
-
-A lightweight web experience featuring **two AI-themed rhythm & music games**.
-
----
-
-## 🧠 Word Beat Challenge + Guess the Song
+# 🧠 Word Beat Challenge + Guess the Song
 
 ### 🎵 Word Beat Challenge
 
