@@ -51,11 +51,4 @@ npm start
 
 ---
 
-## 👤 Author
-
-**Tanvi Pathare**
-Exploring the intersection of **music, words, rhythm, and AI-style interaction**.
-
----
-
 🎧 Stay on beat. Decode the music.
